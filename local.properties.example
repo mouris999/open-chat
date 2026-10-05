@@ -1,0 +1,16 @@
+## Copy this file to `local.properties` and fill in your own values.
+## `local.properties` is gitignored because it holds secrets.
+
+## Location of the Android SDK. Machine-specific, only used by Gradle.
+sdk.dir=C\:\\Users\\YOUR_USER\\AppData\\Local\\Android\\Sdk
+
+## Cloudinary API secret (used to sign uploads). Get from the Cloudinary console.
+cloudinary.apiSecret=
+
+## TURN/STUN server credentials for WebRTC calls.
+turn.username=
+turn.credential=
+
+## API base URL the app talks to.
+## 10.0.2.2 = host machine as seen from the Android emulator.
+api.baseUrl=http://10.0.2.2:3000/

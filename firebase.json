@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "web",
+    "ignore": [
+      "**/.*"
+    ]
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}

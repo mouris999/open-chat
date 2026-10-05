@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "992470424862",
+    "project_id": "open-chat-795f6",
+    "storage_bucket": "open-chat-795f6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992470424862:android:9ced25965cc9a6d6093d0f",
+        "android_client_info": {
+          "package_name": "com.openchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992470424862-e8mrsch6l27cveqfii8o0e5n0nmj1ehk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.openchat",
+            "certificate_hash": "669e50bef03410d425b86b16ffd36dd980627e38"
+          }
+        },
+        {
+          "client_id": "992470424862-knipn43l3c2nledhrk2707kkrjiovil6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCihu6qCE6qIvNu0L6v-GJVhhilgh-dvQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992470424862-knipn43l3c2nledhrk2707kkrjiovil6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

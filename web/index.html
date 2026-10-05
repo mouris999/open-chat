@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenChat Web - Next Generation Secure Messaging</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="dark-theme">
+    <div class="background-container"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="main-container">
+        <!-- Linking Session Screen -->
+        <div class="glass-card" id="login-card">
+            <header>
+                <div class="logo-area">
+                    <i class="fa-solid fa-comments logo-icon"></i>
+                    <h1>OpenChat<span>Web</span></h1>
+                </div>
+                <p>Scan the secure QR code using your phone to link your account</p>
+            </header>
+
+            <div class="qr-section">
+                <div id="qrcode"></div>
+                <div class="loading-overlay" id="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <ol>
+                    <li>Open <strong>OpenChat</strong> on your phone</li>
+                    <li>Go to <strong>Settings</strong> &rarr; <strong>Link device</strong></li>
+                    <li>Point your phone camera to this screen</li>
+                </ol>
+            </div>
+
+            <div class="status" id="status">
+                <i class="fa-solid fa-circle-notch fa-spin status-spinner"></i> Generating secure cryptographic session...
+            </div>
+        </div>
+
+        <!-- Full Web Dashboard (Initially Hidden) -->
+        <div class="dashboard-wrapper hidden" id="dashboard-card">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <div class="sidebar-top">
+                    <div class="user-profile-trigger" id="sidebar-profile-btn" title="View Profile">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect fill='%236366f1' width='80' height='80' rx='14'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%23ffffff' font-size='32' font-family='sans-serif' font-weight='600'%3EU%3C/text%3E%3C/svg%3E" id="user-avatar" class="sidebar-avatar" alt="User Avatar">
+                        <span class="user-status-dot online"></span>
+                    </div>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" id="nav-chats" title="Chats">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </button>
+                    <button class="nav-item" id="nav-contacts" title="Contacts">
+                        <i class="fa-solid fa-address-book"></i>
+                    </button>
+                    <button class="nav-item" id="nav-scheduled" title="Scheduled Messages">
+                        <i class="fa-solid fa-clock"></i>
+                    </button>
+                    <button class="nav-item" id="nav-help" title="FAQ & Support">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </button>
+                </nav>
+
+                <div class="sidebar-bottom">
+                    <button class="theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="logout-btn" id="logout-btn" title="Disconnect Session">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Left Panel: Chat List / Contact List -->
+            <section class="left-panel">
+                <div class="panel-header">
+                    <div class="logo-area-small">
+                        <i class="fa-solid fa-comments"></i>
+                        <h2>OpenChat</h2>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="header-btn" id="create-chat-btn" title="New Private Chat">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </button>
+                        <button class="header-btn" id="create-group-btn" title="New Group Chat">
+                            <i class="fa-solid fa-user-group"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-bar-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="chat-search" placeholder="Search chats, contacts..." aria-label="Search chats">
+                </div>
+
+                <!-- Chat List viewport -->
+                <div class="chat-list" id="chats-container">
+                    <div class="list-placeholder">
+                        <div class="spinner"></div>
+                        <p>Syncing conversations...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Center Panel: Active Conversation Viewport -->
+            <section class="center-panel" id="chat-viewport">
+                <!-- Welcome Viewport when no chat selected -->
+                <div class="welcome-viewport" id="welcome-viewport">
+                    <i class="fa-solid fa-message welcome-icon"></i>
+                    <h3>Welcome to OpenChat Web</h3>
+                    <p>Select a conversation from the sidebar list, or click on a contact to initiate a secure end-to-end encrypted chat.</p>
+                </div>
+
+                <!-- Active Chat Viewport (Initially Hidden) -->
+                <div class="active-chat-viewport hidden" id="active-chat-container">
+                    <!-- Chat Header -->
+                    <div class="chat-header">
+                        <div class="chat-header-info" id="chat-header-info-btn">
+                            <div class="avatar-wrapper">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect fill='%23cbd5e1' width='80' height='80' rx='14'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%231e293b' font-size='32' font-family='sans-serif' font-weight='600'%3EC%3C/text%3E%3C/svg%3E" id="active-chat-avatar" class="chat-avatar" alt="Chat Avatar">
+                                <span class="active-status-dot" id="active-user-status"></span>
+                            </div>
+                            <div class="chat-title-meta">
+                                <h3 id="active-chat-title">Active Chat Name</h3>
+                                <p id="active-chat-status">Offline</p>
+                            </div>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="header-action-btn call-btn" id="voice-call-btn" title="Voice Call">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <button class="header-action-btn call-btn" id="video-call-btn" title="Video Call">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                            <button class="header-action-btn" id="search-msg-btn" title="Search messages">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                            <button class="header-action-btn" id="toggle-details-btn" title="Chat info & Media">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Inner Chat Search (Initially Hidden) -->
+                    <div class="inner-search-bar hidden" id="inner-search-wrapper">
+                        <input type="text" id="inner-search-input" placeholder="Search text in active conversation..." aria-label="Search messages">
+                        <button class="close-search-btn" id="close-search-btn" aria-label="Close search">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Message List Area -->
+                    <div class="messages-viewport" id="messages-container"></div>
+
+                    <!-- Reply Preview Bar (Initially Hidden) -->
+                    <div class="reply-preview-bar hidden" id="reply-preview-bar">
+                        <div class="reply-content">
+                            <span class="reply-sender" id="reply-preview-sender">Sender</span>
+                            <p class="reply-text" id="reply-preview-text">Replied message text...</p>
+                        </div>
+                        <button class="close-reply-btn" id="close-reply-btn" aria-label="Cancel reply">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Message Typing Indicator -->
+                    <div class="typing-indicator-bar hidden" id="typing-indicator">
+                        <span class="typing-text">User is typing</span>
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <!-- Message Input Bar -->
+                    <div class="chat-input-bar">
+                        <div class="input-actions-left">
+                            <button class="input-action-btn" id="attach-btn" title="Attach Media/Files">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <div class="attachments-popup hidden" id="attachments-popup">
+                                <button class="attach-item" id="attach-photo"><i class="fa-solid fa-image"></i> Photo</button>
+                                <button class="attach-item" id="attach-video"><i class="fa-solid fa-video"></i> Video</button>
+                                <button class="attach-item" id="attach-doc"><i class="fa-solid fa-file-invoice"></i> Document</button>
+                            </div>
+                        </div>
+                        <input type="file" id="image-file-input" accept="image/*" hidden>
+                        <input type="file" id="video-file-input" accept="video/*" hidden>
+                        <input type="file" id="doc-file-input" accept=".pdf,.doc,.docx,.txt,.zip" hidden>
+                        
+                        <div class="input-text-area">
+                            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" aria-label="Message input">
+                        </div>
+
+                        <div class="input-actions-right">
+                            <button class="input-action-btn" id="schedule-send-btn" title="Schedule message">
+                                <i class="fa-solid fa-clock"></i>
+                            </button>
+                            <button class="send-message-btn" id="send-msg-btn" aria-label="Send message">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Chat Details Drawer (Initially Hidden) -->
+            <section class="right-panel hidden" id="details-drawer">
+                <div class="drawer-header">
+                    <h3>Chat Information</h3>
+                    <button class="close-drawer-btn" id="close-drawer-btn" aria-label="Close drawer">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                </div>
+                
+                <div class="drawer-body">
+                    <div class="drawer-profile-summary">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect fill='%23cbd5e1' width='120' height='120' rx='20'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%231e293b' font-size='48' font-family='sans-serif' font-weight='600'%3EC%3C/text%3E%3C/svg%3E" class="drawer-avatar" id="drawer-chat-avatar" alt="Profile">
+                        <h4 id="drawer-chat-title">Chat Name</h4>
+                        <p id="drawer-chat-subtitle">Direct Message</p>
+                    </div>
+
+                    <div class="drawer-section">
+                        <h5><i class="fa-solid fa-lock"></i> Encryption Status</h5>
+                        <p class="section-desc">Messages in this conversation are secured via End-to-End Cryptography (Signal Protocol Double Ratchet + X3DH key exchange).</p>
+                    </div>
+
+                    <div class="drawer-section" id="disappearing-messages-section">
+                        <h5><i class="fa-solid fa-hourglass-half"></i> Disappearing Messages</h5>
+                        <div class="timer-selector">
+                            <button class="timer-opt active" data-duration="0">Off</button>
+                            <button class="timer-opt" data-duration="86400000">24h</button>
+                            <button class="timer-opt" data-duration="604800000">7d</button>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section" id="wallpaper-selector-section">
+                        <h5><i class="fa-solid fa-palette"></i> Chat Wallpaper</h5>
+                        <div class="wallpaper-grid">
+                            <div class="wp-opt active" data-wp="default" style="background: #0f172a;" role="button" aria-label="Default wallpaper" tabindex="0"></div>
+                            <div class="wp-opt" data-wp="sunset" style="background: linear-gradient(135deg, #f43f5e, #fb923c);" role="button" aria-label="Sunset wallpaper" tabindex="0"></div>
+                            <div class="wp-opt" data-wp="ocean" style="background: linear-gradient(135deg, #0ea5e9, #2563eb);" role="button" aria-label="Ocean wallpaper" tabindex="0"></div>
+                            <div class="wp-opt" data-wp="emerald" style="background: linear-gradient(135deg, #10b981, #059669);" role="button" aria-label="Emerald wallpaper" tabindex="0"></div>
+                            <div class="wp-opt" data-wp="violet" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);" role="button" aria-label="Violet wallpaper" tabindex="0"></div>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section" id="group-members-section">
+                        <h5><i class="fa-solid fa-users"></i> Group Participants (<span id="members-count">0</span>)</h5>
+                        <div class="members-list" id="members-container"></div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <h5><i class="fa-solid fa-photo-film"></i> Shared Media & Links</h5>
+                        <div class="media-grid" id="shared-media-container">
+                            <p class="empty-media-placeholder">No photos, videos, or documents shared yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modals Section -->
+    
+    <!-- New Private Chat Modal -->
+    <div class="modal hidden" id="create-chat-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>Select a Contact</h3>
+                <button class="close-modal-btn" id="close-chat-modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="contact-search-input" placeholder="Search contacts by name or phone..." aria-label="Search contacts">
+            </div>
+            <div class="modal-body list-scroller" id="contacts-modal-list">
+                <!-- Dynamically filled contacts list -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Group Chat Modal -->
+    <div class="modal hidden" id="create-group-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>Create New Group</h3>
+                <button class="close-modal-btn" id="close-group-modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="group-creation-meta">
+                <input type="text" id="group-name-input" placeholder="Enter group subject/title..." aria-label="Group name">
+            </div>
+            <div class="modal-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="group-contact-search" placeholder="Search participants to add..." aria-label="Search participants">
+            </div>
+            <div class="modal-body list-scroller" id="group-contacts-list">
+                <!-- Contacts list with checkboxes -->
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-modal-btn" id="cancel-group-btn">Cancel</button>
+                <button class="confirm-modal-btn" id="confirm-group-btn">Create Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Editor Modal -->
+    <div class="modal hidden" id="profile-editor-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>Edit Profile Settings</h3>
+                <button class="close-modal-btn" id="close-profile-modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body profile-editor-body">
+                <div class="avatar-upload-section">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%236366f1' width='100' height='100' rx='18'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%23ffffff' font-size='40' font-family='sans-serif' font-weight='600'%3EU%3C/text%3E%3C/svg%3E" class="editor-avatar-preview" id="profile-edit-avatar-preview" alt="Avatar">
+                    <div class="avatar-upload-inputs">
+                        <label for="profile-avatar-url">Profile Photo URL</label>
+                        <input type="text" id="profile-avatar-url" placeholder="Paste image address/URL...">
+                    </div>
+                </div>
+                <div class="editor-input-group">
+                    <label for="profile-name-input">Display Name</label>
+                    <input type="text" id="profile-name-input" placeholder="Enter your display name...">
+                </div>
+                <div class="editor-input-group">
+                    <label for="profile-bio-input">Bio / Status Message</label>
+                    <input type="text" id="profile-bio-input" placeholder="Available, at work, encrypted...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-modal-btn" id="cancel-profile-btn">Cancel</button>
+                <button class="confirm-modal-btn" id="confirm-profile-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheduled Messages Modal -->
+    <div class="modal hidden" id="scheduled-messages-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>Scheduled Messages List</h3>
+                <button class="close-modal-btn" id="close-scheduled-modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body list-scroller" id="scheduled-list-container">
+                <p class="empty-list-placeholder">No upcoming scheduled messages.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help & FAQ Modal -->
+    <div class="modal hidden" id="help-support-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>OpenChat Support & FAQ</h3>
+                <button class="close-modal-btn" id="close-help-modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body list-scroller faq-body">
+                <div class="faq-item">
+                    <h4>What is OpenChat Web?</h4>
+                    <p>OpenChat Web is a secure companion desktop application linking to your Android OpenChat phone client. It synchronizes your private chats, groups, and contacts in real time using secure, real-time Firebase databases.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Is it End-to-End Encrypted (E2EE)?</h4>
+                    <p>Yes. Private messages use standard Signal Protocol double-ratchet encryption ensuring that only you and the recipient can read what is sent.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How do Disappearing Messages work?</h4>
+                    <p>When you enable Disappearing Messages in the Chat Information drawer, all new messages sent by either participant will expire and automatically self-destruct after the chosen timer limit (24 hours or 7 days).</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How can I schedule messages?</h4>
+                    <p>To schedule a message, long-press the send button on your phone or click the calendar button in the message bar of this Web companion, select your future date/time, and it will be queued until the trigger time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Message Selector Dialog (Modal) -->
+    <div class="modal hidden" id="schedule-select-modal">
+        <div class="modal-content glass-card mini-modal">
+            <div class="modal-header">
+                <h3>Schedule Message</h3>
+                <button class="close-modal-btn" id="close-schedule-select"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="editor-input-group">
+                    <label for="schedule-time-input">Select Date and Time</label>
+                    <input type="datetime-local" id="schedule-time-input" style="color: white; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 12px; width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-modal-btn" id="cancel-schedule-select">Cancel</button>
+                <button class="confirm-modal-btn" id="confirm-schedule-select">Schedule Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emoji Reactions Popup Panel -->
+    <div class="reactions-picker hidden" id="reactions-picker-floating">
+        <div class="reactions-row">
+            <span class="reaction-emoji" data-emoji="👍">👍</span>
+            <span class="reaction-emoji" data-emoji="❤️">❤️</span>
+            <span class="reaction-emoji" data-emoji="😂">😂</span>
+            <span class="reaction-emoji" data-emoji="😮">😮</span>
+            <span class="reaction-emoji" data-emoji="😢">😢</span>
+            <span class="reaction-emoji" data-emoji="🙏">🙏</span>
+        </div>
+        <div class="msg-actions-row">
+            <button class="msg-action-btn" id="copy-msg-btn"><i class="fa-solid fa-copy"></i> Copy</button>
+            <button class="msg-action-btn danger" id="delete-msg-btn"><i class="fa-solid fa-trash-can"></i> Delete</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs & Companion Logic -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

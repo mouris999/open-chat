@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AndroidManifest.xml — Add these to your existing manifest -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Required permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+
+        <!-- Your main activity -->
+        <activity android:name=".MainActivity" />
+
+        <!-- T-Auth OAuth Activity (add to your app module) -->
+        <activity
+            android:name="com.tauth.TAuthActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true">
+
+            <!--
+                This intent-filter lets your app receive the redirect from T-Auth.
+                The scheme "tauth" must match the redirectUri you registered.
+
+                redirectUri = "tauth://callback"
+                           ↑ scheme   ↑ host
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tauth" android:host="callback" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>

@@ -1,0 +1,86 @@
+# ---- Android / Gradle / Kotlin ----
+*.iml
+.gradle
+.kotlin
+/local.properties
+local.properties
+/build
+build/
+/captures
+.cxx
+.externalNativeBuild
+*.hprof
+
+# ---- Secrets: never commit these ----
+# Firebase Admin service account (contains a real private key)
+/service-account.json
+app/service-account.json
+**/service-account.json
+# Signing material
+*.keystore
+*.jks
+*.p12
+# Environment files (keep the committed .env.example templates)
+.env
+.env.*
+!*.env.example
+!*/.env.example
+open-hub/.env.local
+.env.local
+!t-auth-server/.env.example
+
+# ---- Node ----
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm/
+
+# ---- Build outputs / artifacts ----
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+dist/
+web/dist/
+**/dist/
+
+# NOTE: database.rules.json and firebase.json ARE tracked on purpose,
+# they are needed for `firebase deploy`.
+# ---- Firebase / emulator ----
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+firebase-debug.*.log
+
+# ---- IDE / editor ----
+.idea/
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+*.hprof
+.vscode/
+!.vscode/extensions.json
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Internal working docs (not published) ----
+SECURITY_AUDIT_REPORT.md
+BUG_MASTER_KNOWLEDGE_BASE.md
+bugfinder.md
+
+# ---- Logs / temp ----
+*.log
+*.tmp
+*.bak
+*.swp

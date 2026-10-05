@@ -1,0 +1,87 @@
+{
+  "rules": {
+    "sessions": {
+      "$token": {
+        ".read": "auth.uid !== null || !data.exists()",
+        ".write": "!data.exists() || auth.uid !== null",
+        ".validate": "newData.hasChildren(['status'])"
+      }
+    },
+    "messages": {
+      "$chatId": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
+      }
+    },
+    "chats": {
+      ".read": "auth.uid !== null",
+      ".write": "auth.uid !== null"
+    },
+    "status": {
+      "$uid": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "typing": {
+      "$chatId": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
+      }
+    },
+    "scheduledMessages": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "webrtc_signaling": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid !== null"
+      }
+    },
+    "ice_candidates": {
+      "$callId": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
+      }
+    },
+    "stories": {
+      "$uid": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "polls": {
+      "$pollId": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
+      }
+    },
+    "backups": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "userSettings": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "drafts": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "fcmTokens": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        ".write": "auth.uid === $uid"
+      }
+    }
+  }
+}
